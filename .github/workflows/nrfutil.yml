@@ -1,0 +1,24 @@
+name: nrfutil
+
+on:
+  workflow_dispatch:
+
+jobs:
+  nrfutil:
+    runs-on: ubuntu-latest
+    env:
+        NRFUTIL_LOG: "trace"
+    steps:
+      - run: |
+            wget https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil
+            mv nrfutil /usr/local/bin
+            chmod +x /usr/local/bin/nrfutil
+            nrfutil install toolchain-manager
+            echo "install v2.3.0 toolchain"
+            nrfutil toolchain-manager install --ncs-version v2.3.0
+            nrfutil toolchain-manager list
+            echo "before: $PATH"
+            nrfutil toolchain-manager launch /bin/bash
+            echo "after: $PATH"
+
+            west help
