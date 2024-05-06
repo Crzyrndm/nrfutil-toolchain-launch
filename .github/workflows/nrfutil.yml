@@ -17,8 +17,13 @@ jobs:
             echo "install v2.3.0 toolchain"
             nrfutil toolchain-manager install --ncs-version v2.3.0
             nrfutil toolchain-manager list
+
             echo "before: $PATH"
-            nrfutil toolchain-manager launch /bin/bash
+            # nrfutil toolchain-manager launch /bin/bash
+
+            nrfutil toolchain-manager env --as-script > export_env.sh
+            source export_env.sh
+
             echo "after: $PATH"
 
             west help
