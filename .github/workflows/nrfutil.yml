@@ -8,22 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
         NRFUTIL_LOG: "trace"
+        SDK_BRANCH: v2.6-branch
+        TOOLCHAIN_VERSION: v2.6.0
     steps:
       - run: |
             wget https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil
             mv nrfutil /usr/local/bin
             chmod +x /usr/local/bin/nrfutil
             nrfutil install toolchain-manager
-            echo "install v2.3.0 toolchain"
-            nrfutil toolchain-manager install --ncs-version v2.3.0
+            nrfutil toolchain-manager install --ncs-version ${{ env.TOOLCHAIN_VERSION }}
             nrfutil toolchain-manager list
 
-            echo "before: $PATH"
-            # nrfutil toolchain-manager launch /bin/bash
-
+            # launch doesn't work in CI, export instead
             nrfutil toolchain-manager env --as-script > export_env.sh
             source export_env.sh
 
-            echo "after: $PATH"
-
-            west help
+            west init -m https://github.com/nrfconnect/sdk-nrf --mr ${{ env.SDK_BRANCH }} .
+            west update --narrow -o=--depth=1
